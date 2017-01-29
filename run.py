@@ -10,6 +10,8 @@ gmaps = googlemaps.Client(key=os.environ['GOOGLEMAPSKEY'])
 def lookup():
     message_body = request.values.get('Body')
 
+    print(message_body)
+
     geocode_result = gmaps.geocode(message_body) #TODO: Auto retries but needs something to catch errors
 
     if (len(geocode_result) == 0):
@@ -84,5 +86,8 @@ def lookup():
     resp.message(message_response)
     return str(resp)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    if port == 5000:
+        app.debug = True
+    app.run(host='0.0.0.0', port=port)
