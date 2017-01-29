@@ -10,7 +10,7 @@ gmaps = googlemaps.Client(key=os.environ['GOOGLEMAPSKEY'])
 def lookup():
     message_body = request.values.get('Body')
 
-    geocode_result = gmaps.geocode(message_body)
+    geocode_result = gmaps.geocode(message_body) #TODO: Auto retries but needs something to catch errors
 
     if (len(geocode_result) == 0):
         message_response = "This is not a valid address. Please try again and make sure to send an address including a street number, city, and state."
@@ -56,13 +56,13 @@ def lookup():
 
     str_list=[]
 
-    str_list.append("State:\n")
+    str_list.append("You are represented by:\nState level:\n")
     for x in range(0, len(state_json)):
         str_list.append(state_json[x]['first_name'] + " " + state_json[x]['last_name'] + " " 
             + "(" + state_json[x]['state'].upper() + "-" + state_json[x]['district'] + ")" + " ")
-        str_list.append(state_json[x]['offices'][0]['phone'] + "\n \n") # could have more than one office
+        str_list.append(state_json[x]['offices'][0]['phone'] + "\n \n") # TODO: could have more than one office
 
-    str_list.append("National:\n")
+    str_list.append("National level:\n")
     for x in range(0, national_json['count']):
         if national_json['results'][x]['title']:
             str_list.append(national_json['results'][x]['title'] + " ")
