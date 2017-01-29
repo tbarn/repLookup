@@ -7,7 +7,7 @@ app = Flask(__name__)
 gmaps = googlemaps.Client(key=os.environ['GOOGLEMAPSKEY'])
 
 @app.route("/", methods=['GET', 'POST'])
-def hello_monkey():
+def lookup():
     message_body = request.values.get('Body')
 
     geocode_result = gmaps.geocode(message_body)
@@ -32,23 +32,27 @@ def hello_monkey():
     lat = str(geocode_result[0]['geometry']['location']['lat'])
     lng = str(geocode_result[0]['geometry']['location']['lng'])
 
-    national = requests.get("https://congress.api.sunlightfoundation.com/legislators/locate?latitude=" + lat + "&longitude=" + lng)
-    if (national.status_code == requests.codes.ok):
+    try:
+        national = requests.get("https://congress.api.sunlightfoundation.com/legislators/locate?latitude=" + lat + "&longitude=" + lng)
+        national.raise_for_status()
         national_json = national.json()
-    else: 
+    except requests.exceptions.RequestException as e: 
+        print(e)
         message_response = "This is awkward. There was an error. Please enter your address again."
         resp = twilio.twiml.Response()
         resp.message(message_response)
-        return str(resp)        
+        return str(resp)
 
-    state = requests.get("https://openstates.org/api/v1/legislators/geo/?lat=" + lat +"&long=" + lng)
-    if (state.status_code == requests.codes.ok):
-        state_json = state.json()
-    else: 
+    try:
+        state = requests.get("https://openstates.org/api/v1/legislators/geo/?lat=" + lat +"&long=" + lng)
+        state.raise_for_status()
+        state_json = state.json()    
+    except requests.exceptions.RequestException as e: 
+        print(e)
         message_response = "This is awkward. There was an error. Please enter your address again."
         resp = twilio.twiml.Response()
         resp.message(message_response)
-        return str(resp)     
+        return str(resp)
 
     str_list=[]
 
