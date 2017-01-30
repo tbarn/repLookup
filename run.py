@@ -9,9 +9,6 @@ gmaps = googlemaps.Client(key=os.environ['GOOGLEMAPSKEY'])
 @app.route("/", methods=['GET', 'POST'])
 def lookup():
     message_body = request.values.get('Body')
-
-    print(message_body)
-
     geocode_result = gmaps.geocode(message_body) #TODO: Auto retries but needs something to catch errors
 
     if (len(geocode_result) == 0):
