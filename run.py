@@ -35,7 +35,9 @@ def lookup():
     lng = str(geocode_result[0]['geometry']['location']['lng'])
 
     try:
-        national = requests.get("https://congress.api.sunlightfoundation.com/legislators/locate?latitude=" + lat + "&longitude=" + lng)
+        url = "https://congress.api.sunlightfoundation.com/legislators/locate"
+        payload = {"latitude" : lat, "longitude" : lng}
+        national = requests.get(url, payload)
         national.raise_for_status()
         national_json = national.json()
     except requests.exceptions.RequestException as e: 
@@ -46,7 +48,9 @@ def lookup():
         return str(resp)
 
     try:
-        state = requests.get("https://openstates.org/api/v1/legislators/geo/?lat=" + lat +"&long=" + lng)
+        url = "https://openstates.org/api/v1/legislators/geo/"
+        payload = {"lat" : lat, "long" : lng}
+        state = requests.get(url, payload)
         state.raise_for_status()
         state_json = state.json()    
     except requests.exceptions.RequestException as e: 
