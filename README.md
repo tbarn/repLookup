@@ -8,7 +8,7 @@ This application uses the [Google Maps Geocoding API](https://developers.google.
 
 ### Setup:
 
-You will need to get a [Google Maps API Key] to use this application. After you have gotten a key, store it as an environment varible. To run it locally, you can store it like this:
+You will need to get a [Google Maps API Key](https://developers.google.com/maps/documentation/geocoding/get-api-key) to use this application. After you have gotten a key, store it as an environment varible. To run it locally, you can store it like this:
 
 ```
 export GOOGLEMAPSKEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
