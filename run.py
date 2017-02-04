@@ -59,26 +59,25 @@ def lookup():
 
     str_list=[]
 
-    str_list.append("You are represented by:\nState level:\n")
-    for x in range(0, len(state_json)):
-        str_list.append(state_json[x]['first_name'] + " " + state_json[x]['last_name'] + " " 
-            + "(" + state_json[x]['state'].upper() + "-" + state_json[x]['district'] + ")" + " ")
-        str_list.append(state_json[x]['offices'][0]['phone'] + "\n \n") # TODO: could have more than one office
+    str_list.append("Hi! You are represented by...\n\nState level:\n")
+    for x in state_json:
+        str_list.append(x['first_name'] + " " + x['last_name'] + " (" + x['state'].upper() + "-" + x['district'] + ") ")
+        str_list.append(x['offices'][0]['phone'] + "\n \n") # TODO: could have more than one office
+
 
     str_list.append("National level:\n")
-    for x in range(0, national_json['count']):
-        if national_json['results'][x]['title']:
-            str_list.append(national_json['results'][x]['title'] + " ")
-        
-        str_list.append(national_json['results'][x]['first_name'] + " " + national_json['results'][x]['last_name'] + " " 
-            + "(" + national_json['results'][x]['state'])
-        
-        if (national_json['results'][x]['district']):
-            str_list.append("-" + str(national_json['results'][x]['district']) + ") ")
+    for x in national_json['results']:
+        if x['title']:
+            str_list.append(x['title'] + " ")
+
+        str_list.append(x['first_name'] + " " + x['last_name'] + " (" + x['state'])
+
+        if x['district']:
+            str_list.append("-" + str(x['district']) + ") ")
         else:
             str_list.append(") ")
-        
-        str_list.append(national_json['results'][x]['phone'] + "\n \n")
+
+        str_list.append(x['phone'] + "\n \n")
 
     str_list.append("Want help calling your reps? Check out: http://echothroughthefog.cordeliadillon.com/post/153393286626/how-to-call-your-reps-when-you-have-social-anxiety")     
     message_response = ''.join(str_list)
