@@ -26,6 +26,16 @@ export GOOGLEMAPSKEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 You will also need a Twilio account and phone number. Since this takes advantage of webhooks/TwiML, you don't need to store any Twilio credentials, but you do need to have a public facing server. Locally, you can create this with [ngrok](https://ngrok.com). If you deploy the application to Heroku or other hosting options, you can use the address for the application as part of your setup. 
 
+Once you have purchased a Twilio phone number and are logged into your account: 
+
+1. Go to the "Phone Numbers" section (also shown as "#") and make sure you are in the "Manage Numbers" section
+2. In the "Active Numbers" section, select the phone number you want to use
+3. In the "Configure" section for that number, locate the "Messaging" section at the bottom
+4. In the text box next to "A Message Comes In" make sure that "Webhook" is selected
+5. Paste the URL of your application in the text box next to this section as seen in the picture below:
+
+![Image of the Twilio Messaging Webhook section](twilio-messaging-webhook.png)
+
 (TODO: Add pictures of Twilio settings and more details)
 
 ### FAQs:
