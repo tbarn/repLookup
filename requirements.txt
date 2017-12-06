@@ -3,7 +3,6 @@ args==0.1.0
 click==6.7
 clint==0.5.1
 Flask==0.12
-googlemaps==2.4.5
 httplib2==0.9.2
 itsdangerous==0.24
 Jinja2==2.9.4
