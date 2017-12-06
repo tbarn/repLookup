@@ -4,22 +4,16 @@ A SMS based application to get your state and national reps' contact information
 
 <img src="screenshot.png" width="300">
 
-This application uses the [Google Maps Geocoding API](https://developers.google.com/maps/documentation/geocoding/intro), [Open States API](http://docs.openstates.org/api/index.html), [Sunlight Foundation Congress API](https://sunlightlabs.github.io/congress/) (soon to be merged with ProPublica Congress API), [Twilio](https://www.twilio.com), and [Heroku](https://www.heroku.com/) for deployment.
+This application uses the [Google Civic Information API](https://developers.google.com/civic-information/), [Twilio](https://www.twilio.com), and [Heroku](https://www.heroku.com/) for deployment.
 
 ### Setup:
 
-### Open States API
-
-Register for an Open States API key [here](https://openstates.org/api/register/). The process is pretty quick and free. You might consider making a [donation to the project](https://www.generosity.com/fundraising/open-states-general-support-fund) too while you are at it. 
-
-(TODO: Implement API key)
-
 ## Google Maps Geocoding API
 
-You will need to get a [Google Maps API Key](https://developers.google.com/maps/documentation/geocoding/get-api-key) to use this application. After you have gotten a key, store it as an environment variable. To run it locally, you can store it like this:
+You will need to get a [Google Civic Information API Key](https://developers.google.com/civic-information/docs/using_api) to use this application. After you have gotten a key, store it as an environment variable. To run it locally, you can store it like this:
 
 ```
-export GOOGLEMAPSKEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+export GOOGLE_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
 ## Twilio API

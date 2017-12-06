@@ -1,85 +1,42 @@
 from flask import Flask, request, redirect
 import twilio.twiml
-import googlemaps, requests, os
+import requests, os, json
 
 app = Flask(__name__)
 
-gmaps = googlemaps.Client(key=os.environ['GOOGLEMAPSKEY'])
+key = os.environ['GOOGLE_KEY']
 
 @app.route("/", methods=['GET', 'POST'])
 def lookup():
     message_body = request.values.get('Body')
-    geocode_result = gmaps.geocode(message_body) #TODO: Auto retries but needs something to catch errors
 
-    if (len(geocode_result) == 0):
-        message_response = "This is not a valid address. Please try again and make sure to send an address including a street number, city, and state."
-        resp = twilio.twiml.Response()
-        resp.message(message_response)
-        return str(resp)
-    elif (len(geocode_result) > 1):
-        message_response = "There are multiple address results for this address. Please try again and make sure to send an address including a street number, city, and state."
-        resp = twilio.twiml.Response()
-        resp.message(message_response)
-        return str(resp)
-
-    if (geocode_result[0]['types'] != ['street_address']):
-        message_response = "Sometimes a city or zip code has multiple districts. Please try again and make sure to send an address including a street number, city, and state."
-        resp = twilio.twiml.Response()
-        resp.message(message_response)
-        return str(resp)
-
-    lat = str(geocode_result[0]['geometry']['location']['lat'])
-    lng = str(geocode_result[0]['geometry']['location']['lng'])
-
-    try:
-        url = "https://congress.api.sunlightfoundation.com/legislators/locate"
-        payload = {"latitude" : lat, "longitude" : lng}
-        national = requests.get(url, payload)
-        national.raise_for_status()
-        national_json = national.json()
-    except requests.exceptions.RequestException as e: 
+    try: 
+        url = "https://www.googleapis.com/civicinfo/v2/representatives"
+        querystring = {"key": key, "levels":["country","administrativeArea1"],
+        "roles":["legislatorUpperBody","legislatorLowerBody"], "address": message_body}
+        response = requests.request("GET", url, params=querystring)
+        json_response = json.loads(response.text)
+        offices = json_response['offices']
+        officials = json_response['officials']
+    except requests.exceptions.RequestException as e:
         print(e)
         message_response = "This is awkward. There was an error. Please enter your address again."
         resp = twilio.twiml.Response()
         resp.message(message_response)
-        return str(resp)
-
-    try:
-        url = "https://openstates.org/api/v1/legislators/geo/"
-        payload = {"lat" : lat, "long" : lng}
-        state = requests.get(url, payload)
-        state.raise_for_status()
-        state_json = state.json()    
-    except requests.exceptions.RequestException as e: 
-        print(e)
-        message_response = "This is awkward. There was an error. Please enter your address again."
-        resp = twilio.twiml.Response()
-        resp.message(message_response)
-        return str(resp)
+        return str(resp)        
 
     str_list=[]
 
-    str_list.append("Hi! You are represented by...\n\nState level:\n")
-    for x in state_json:
-        str_list.append(x['first_name'] + " " + x['last_name'] + " (" + x['state'].upper() + "-" + x['district'] + ") ")
-        str_list.append(x['offices'][0]['phone'] + "\n \n") # TODO: could have more than one office
+    str_list.append("Hi! You are represented by...\n")
 
+    for x in offices:
+        str_list.append("\n" + x["name"] + ": \n")
+        for y in x['officialIndices']:
+            str_list.append(officials[y]['name'] + " ")
+            for z in officials[y]['phones']:
+                str_list.append(z + "\n")
 
-    str_list.append("National level:\n")
-    for x in national_json['results']:
-        if x['title']:
-            str_list.append(x['title'] + " ")
-
-        str_list.append(x['first_name'] + " " + x['last_name'] + " (" + x['state'])
-
-        if x['district']:
-            str_list.append("-" + str(x['district']) + ") ")
-        else:
-            str_list.append(") ")
-
-        str_list.append(x['phone'] + "\n \n")
-
-    str_list.append("Want help calling your reps? Check out: http://echothroughthefog.cordeliadillon.com/post/153393286626/how-to-call-your-reps-when-you-have-social-anxiety")     
+    str_list.append("\nWant help calling your reps? Check out: http://echothroughthefog.cordeliadillon.com/post/153393286626/how-to-call-your-reps-when-you-have-social-anxiety")     
     message_response = ''.join(str_list)
 
     resp = twilio.twiml.Response()
