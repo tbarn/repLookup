@@ -15,15 +15,17 @@ def lookup():
         querystring = {"key": key, "levels":["country","administrativeArea1"],
         "roles":["legislatorUpperBody","legislatorLowerBody"], "address": message_body}
         response = requests.request("GET", url, params=querystring)
-        json_response = json.loads(response.text)
-        offices = json_response['offices']
-        officials = json_response['officials']
+        response.raise_for_status()
     except requests.exceptions.RequestException as e:
         print(e)
         message_response = "This is awkward. There was an error. Please enter your address again."
         resp = twilio.twiml.Response()
         resp.message(message_response)
         return str(resp)        
+
+    json_response = json.loads(response.text)
+    offices = json_response['offices']
+    officials = json_response['officials']
 
     str_list=[]
 
